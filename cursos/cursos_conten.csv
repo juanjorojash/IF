@@ -1,0 +1,52 @@
+id,contenidos
+IFI0402,"
+& Introducción a la instrumentación industrial
+&& Conceptos básicos. 
+&& Características de los instrumentos de medición. 
+&& Sistemas de magnitudes y unidades: SMU – ISQ – IS.
+&& Simbología de instrumentos: normas ANSI/ISA.
+& Medidas de temperatura
+&& Medición de temperatura.
+&& Termómetros: vidrio y bimetálico, 
+&& Sensores: termopar, RTD, termistor y pirómetros.
+&& Criterios de selección de medidores de temperatura.
+& Medidas de presión
+&& Repaso de conceptos básicos sobre la Presión.
+&& Medidores de Presión Industriales:
+&&& Métodos de medición
+&&& Medidores de columna de líquido
+&&& Manómetros mecánicos
+&&& Transmisores de presión: piezoresistivos, capacitivos y diferencial. 
+&&& Sensores de presión MEMS
+&& Especificaciones de transmisores de presión.
+&& Comparación de especificaciones.
+& Medidas de nivel
+&& Tecnologías para medición de nivel.
+&& Medidores de nivel industriales: 
+&&& Medición directa de nivel
+&&& Medición de presión hidrostática 
+&&& Medición por presión diferencial.
+&&& Medidor capacitivo
+&&& Medidor ultrasónico
+&&& Medidor por radar
+&&& Punto vibrónico
+&&& Radiométrico
+&& Comparación de especificaciones.
+& Medidas de fuerza y vibración
+&& Galgas extensiométricas
+&& Celdas de carga
+&& Especificaciones de celdas de carga
+&& Acelerómetros
+&&& Sistema masa-resorte-amortiguador
+&&& Especificaciones técnicas
+&& Acelerómetros piezoeléctricos
+&& Acelerómetros piezoresistivos
+&& Acelerómetros capacitivos
+& Medidas de propiedades ópticas
+&& Espectro electromagnético y óptico.
+&& Conceptos básicos de las ondas.
+&& Refracción, reflexión, atenuación y dispersión.
+&& Transmisión, fuentes y detectores de luz.
+&& Absorción, fotoconductividad y efecto fotoeléctrico.
+&& Dispositivos opto electrónicos y sensores.
+"

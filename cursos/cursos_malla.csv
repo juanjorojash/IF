@@ -1,0 +1,6 @@
+id,codigo,nombre,area,semestre,fila,horasTeoria,horasPractica,creditos,requisitos,correquisitos,esrequisito
+IFI0402,IF3502,Instrumentación I,-,4,2,1,1,1,,IFI0405;IFI0406,IFI0503
+IFI0405,MT2001,Circuitos eléctricos en CC y CA,-,4,5,4,0,3,,,
+IFI0406,MT2002,Laboratorio de circuitos eléctricos en CC y CA,-,4,6,0,2,1,,,
+IFI0503,IF3503,Instrumentación II,-,5,3,1,1,1,,,
+
