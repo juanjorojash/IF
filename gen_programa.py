@@ -11,6 +11,7 @@ from pylatex.utils import NoEscape, bold
 import funciones as fun
 
 cursos = pd.read_csv("cursos/cursos_malla.csv")
+cursos = cursos.fillna("")
 detall = pd.read_csv("cursos/cursos_detalles.csv")
 progra = pd.read_csv("cursos/cursos_programas.csv")
 descri = pd.read_csv("cursos/cursos_descri.csv")
@@ -108,52 +109,6 @@ def generar_programa(id):
             ubiPlane += "Curso electivo en " + programa
         if counter > 1:
             ubiPlane += " "
-    susRequi = ""
-    lisRequi = cursos[cursos.id == id].requisitos.item()
-    if str(lisRequi) != "nan":
-        lisRequi = cursos[cursos.id == id].requisitos.str.split(';').explode().reset_index(drop=True)
-        numRequi = len(lisRequi)
-        counter = 0
-        for requisito in lisRequi:
-            counter += 1
-            susRequi += cursos[cursos.id == requisito].codigo.item()[:2] + "-" + cursos[cursos.id == requisito].codigo.item()[2:]
-            susRequi += " "
-            susRequi += cursos[cursos.id == requisito].nombre.item()
-            if counter < numRequi:
-                susRequi += "; "
-            else:
-                susRequi += " "
-    else:
-        susRequi += "Ninguno"
-    corRequi = ""
-    lisCorre = cursos[cursos.id == id].correquisitos.item()
-    if str(lisCorre) != "nan":
-        lisCorre = cursos[cursos.id == id].correquisitos.str.split(';').explode().reset_index(drop=True)
-        numCorre = len(lisCorre)
-        counter = 0
-        for correquisito in lisCorre:
-            counter += 1
-            corRequi += cursos[cursos.id == correquisito].codigo.item()[:2] + "-" + cursos[cursos.id == correquisito].codigo.item()[2:]
-            corRequi += " "
-            corRequi += cursos[cursos.id == correquisito].nombre.item()
-            if counter < numCorre:
-                corRequi += "; "
-            else:  
-                corRequi += " "
-    else:
-        corRequi += "Ninguno"
-    essRequi = NoEscape("")
-    lisEsreq = cursos[cursos.id == id].esrequisito.item()
-    texRequi = ""
-    if str(lisEsreq) != "nan":
-        lisEsreq = cursos[cursos.id == id].esrequisito.str.split(';').explode().reset_index(drop=True)
-        for esrequisito in lisEsreq:      
-            texRequi += cursos[cursos.id == esrequisito].codigo.item()[:2] + "-" + cursos[cursos.id == esrequisito].codigo.item()[2:]
-            texRequi += " "
-            texRequi += cursos[cursos.id == esrequisito].nombre.item()
-        essRequi = NoEscape(texRequi)
-    else:
-        essRequi += NoEscape("Ninguno")
     tipAsist = tipAsistDic.get(detall[detall.id == id].asistencia.item())
     posSufic = sinoDic.get(detall[detall.id == id].suficiencia.item())
     posRecon = sinoDic.get(detall[detall.id == id].reconocimiento.item())
@@ -447,7 +402,7 @@ def generar_programa(id):
     with doc.create(Tabularx(table_spec=r"p{6cm}p{10cm}")) as table:
             table.add_row([bold("Nombre del curso:"), f"{nomCurso}"])
             table.append(NoEscape('[10pt]'))
-            table.add_row([bold("Código:"), f"{str(codCurso)[:2]}-{str(codCurso)[2:]}"])
+            table.add_row([bold("Código:"), f"{str(codCurso)}"])
             table.append(NoEscape('[10pt]'))
             table.add_row([bold("Tipo de curso:"), f"{tipCurso}"])
             table.append(NoEscape('[10pt]'))
@@ -461,12 +416,52 @@ def generar_programa(id):
             table.append(NoEscape('[10pt]'))
             table.add_row([bold("Ubicación en el plan de estudios:"), NoEscape(f"{ubiPlane}")])
             table.append(NoEscape('[10pt]'))
-            table.add_row([bold("Requisitos:"), f"{susRequi}"])
-            table.append(NoEscape('[10pt]'))
-            table.add_row([bold("Correquisitos:"), f"{corRequi}"])
-            table.append(NoEscape('[10pt]'))
-            table.add_row([bold("El curso es requisito de:"), NoEscape(f"{essRequi}")])
-            table.append(NoEscape('[10pt]'))
+            lisRequi = cursos[cursos.id == id].requisitos.str.split(";").explode().reset_index(drop=True)
+            for consecutivo, requisito in lisRequi.items():
+                if consecutivo == 0 and requisito == "":
+                    table.add_row([bold("Requisitos:"), "Ninguno"])
+                elif consecutivo == 0:   
+                    table.add_row([bold("Requisitos:"), f"{cursos[cursos.id == requisito].codigo.item()} \
+                                    {cursos[cursos.id == requisito].nombre.item()}"])   
+                else: 
+                    table.add_row(["", f"{cursos[cursos.id == requisito].codigo.item()} \
+                                    {cursos[cursos.id == requisito].nombre.item()}"])  
+                table.append(NoEscape('[10pt]'))  
+            lisCorre = cursos[cursos.id == id].correquisitos.str.split(';').explode().reset_index(drop=True)
+            for consecutivo, correquisito in lisCorre.items():
+                if consecutivo == 0 and correquisito == "":
+                    table.add_row([bold("Correquisitos:"), "Ninguno"])
+                elif consecutivo == 0:
+                    table.add_row([bold("Correquisitos:"), f"{cursos[cursos.id == correquisito].codigo.item()}\
+                                    {cursos[cursos.id == correquisito].nombre.item()}"])   
+                else: 
+                    table.add_row(["", f"{cursos[cursos.id == correquisito].codigo.item()}\
+                                    {cursos[cursos.id == correquisito].nombre.item()}"])  
+                table.append(NoEscape('[10pt]')) 
+            lisEsreq = cursos[cursos.id == id].esrequisito.str.split(';').explode().reset_index(drop=True)
+            for consecutivo, esrequisito in lisEsreq.items():
+                if consecutivo == 0 and esrequisito == "":
+                    table.add_row([bold("El curso es requisito de:"), "Ninguno"])
+                elif consecutivo == 0:
+                    table.add_row([bold("El curso es requisito de:"), f"{cursos[cursos.id == esrequisito].codigo.item()}\
+                                    {cursos[cursos.id == esrequisito].nombre.item()}"])   
+                else: 
+                    table.add_row(["", f"{cursos[cursos.id == esrequisito].codigo.item()}\
+                                    {cursos[cursos.id == esrequisito].nombre.item()}"])  
+                table.append(NoEscape('[10pt]'))        
+
+    #             essRequi = NoEscape("")
+    # lisEsreq = cursos[cursos.id == id].esrequisito.item()
+    # texRequi = ""
+    # if str(lisEsreq) != "nan":
+    #     lisEsreq = cursos[cursos.id == id].esrequisito.str.split(';').explode().reset_index(drop=True)
+    #     for esrequisito in lisEsreq:      
+    #         texRequi += cursos[cursos.id == esrequisito].codigo.item()[:2] + "-" + cursos[cursos.id == esrequisito].codigo.item()[2:]
+    #         texRequi += " "
+    #         texRequi += cursos[cursos.id == esrequisito].nombre.item()
+    #     essRequi = NoEscape(texRequi)
+    # else:
+    #     essRequi += NoEscape("Ninguno")    
             table.add_row([bold("Asistencia:"), f"{tipAsist}"])
             table.append(NoEscape('[10pt]'))
             table.add_row([bold("Suficiencia:"), f"{posSufic}"])
@@ -598,6 +593,7 @@ generar_programa("IFI0402") #Intrumentación I
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.tex"], shell=True, check=True)
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.aux"], shell=True, check=True)
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.bbl"], shell=True, check=True)
+subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.bcf"], shell=True, check=True)
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.blg"], shell=True, check=True)
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.log"], shell=True, check=True)
 subprocess.run(["del", f"C:\\Repositories\\IF\\programas\\*.run.xml"], shell=True, check=True)
