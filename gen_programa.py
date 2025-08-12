@@ -27,6 +27,7 @@ bibtex = pd.read_csv("cursos/cursos_bibtex.csv")
 profes = pd.read_csv("cursos/cursos_profes.csv")
 datpro = pd.read_csv("profes/profes_datos.csv")
 grapro = pd.read_csv("profes/profes_grados.csv")
+conpro = pd.read_csv("profes/profes_consulta.csv")
 
 tipCursoDic = {
     0: "Teórico",
@@ -172,7 +173,8 @@ def generar_programa(id):
         else: 
             atrTabla += NoEscape(r" \midrule ")
     atrTabla += NoEscape(r" \end{tabular} \end{minipage}")
-    apoCurso = NoEscape(r"Si un estudiante requiere apoyos educativos, podrá solicitarlos a través del Departamento de Orientación y Psicología.")
+    apoCurso = NoEscape(r"De manera excepcional, la forma de impartición y el sitio de impartición del curso puede cambiar temporalmente debido a razones de fuerza mayor o resolución de autoridades competentes. \newline \newline ")
+    apoCurso += NoEscape(r"Si un estudiante requiere apoyos educativos, podrá solicitarlos a través del Departamento de Orientación y Psicología.")
     evaCurso = NoEscape(r"La evaluación se distribuye en los siguientes rubros:")
     evaCurso += NoEscape(r" \newline ")
     tipEvalu = evalua[evalua.id == id].tipoEval.item()
@@ -232,7 +234,10 @@ def generar_programa(id):
         proCurso += NoEscape(f" {profe.escuela}")
         proCurso += NoEscape(Command("emph", "  Sede:").dumps())  
         proCurso += NoEscape(f" {profe.sede}")
-        proCurso += NoEscape(r" \vspace*{4mm} \newline ")             
+        proCurso += NoEscape(r" \vspace*{4mm} \newline ")
+        consProf = conpro[(conpro.codigo == profe.codigo) & (conpro.curso == id)].consulta.item()
+        proCurso += NoEscape(Command("emph", "Consulta:").dumps())
+        proCurso += NoEscape(consProf)             
     proCurso += NoEscape(r"\end{textoMargen}")
     #Config
     config.active = config.Version1(row_heigth=1.5)
