@@ -113,21 +113,8 @@ def generar_programa(id):
     posSufic = sinoDic.get(detall[detall.id == id].suficiencia.item())
     posRecon = sinoDic.get(detall[detall.id == id].reconocimiento.item())
     aprCurso = detall[detall.id == id].aprobacion.str.split(';').explode().reset_index(drop=True)
-    aprCurso = aprCurso[0] + "/" + aprCurso[1] + "/" + aprCurso[2] + " en sesión de Consejo de Escuela " + aprCurso[3]
+    aprCurso = aprCurso[0] + "/" + aprCurso[1] + "/" + aprCurso[2] #+ " en sesión de Consejo de Escuela " + aprCurso[3]
     desGener = NoEscape(descri[descri.id == id].descripcion.item().replace('\n', r'\newline\newline '))
-    desGener += NoEscape(r"El curso busca desarrollar los siguientes atributos de egreso: \newline")
-    lisAtrib = atribu[atribu.id == id].reset_index(drop=True)
-    atrTabla = NoEscape(r" \begin{minipage}{\linewidth} ")
-    atrTabla += NoEscape(r" \centering ") 
-    atrTabla += NoEscape(r" \begin{tabular}{ p{5cm}  p{2cm} } ")
-    atrTabla += NoEscape(r" \toprule ") 
-    for consecutivo, atribs in lisAtrib.iterrows():
-        atrTabla += NoEscape(f" {atribs.atributo} & {atribs.nivel}") + NoEscape(r" \\ ")
-        if consecutivo == len(lisAtrib)-1:
-            atrTabla += NoEscape(r" \bottomrule ")
-        else: 
-            atrTabla += NoEscape(r" \midrule ")
-    atrTabla += NoEscape(r" \end{tabular} \end{minipage}")
     lisObjet = objeti[objeti.id == id].reset_index(drop=True).objetivo
     for consecutivo, objetivo in lisObjet.items():
         if consecutivo == 0:
@@ -172,7 +159,20 @@ def generar_programa(id):
     metCurso += NoEscape(r"\vspace*{2mm}")
     metCurso += NoEscape(f"Este enfoque metodológico permitirá a la persona estudiante {objGener[0].lower() + objGener[1:]}.")
     metCurso += NoEscape(r"\vspace*{2mm} \newline  ")
-    metCurso += NoEscape(r"Si un estudiante requiere apoyos educativos, podrá solicitarlos a través del Departamento de Orientación y Psicología. \newline ")
+    metCurso += NoEscape(r"El curso busca desarrollar los siguientes atributos de egreso: \newline")
+    lisAtrib = atribu[atribu.id == id].reset_index(drop=True)
+    atrTabla = NoEscape(r" \begin{minipage}{\linewidth} ")
+    atrTabla += NoEscape(r" \centering ") 
+    atrTabla += NoEscape(r" \begin{tabular}{ p{5cm}  p{2cm} } ")
+    atrTabla += NoEscape(r" \toprule ") 
+    for consecutivo, atribs in lisAtrib.iterrows():
+        atrTabla += NoEscape(f" {atribs.atributo} & {atribs.nivel}") + NoEscape(r" \\ ")
+        if consecutivo == len(lisAtrib)-1:
+            atrTabla += NoEscape(r" \bottomrule ")
+        else: 
+            atrTabla += NoEscape(r" \midrule ")
+    atrTabla += NoEscape(r" \end{tabular} \end{minipage}")
+    apoCurso = NoEscape(r"Si un estudiante requiere apoyos educativos, podrá solicitarlos a través del Departamento de Orientación y Psicología.")
     evaCurso = NoEscape(r"La evaluación se distribuye en los siguientes rubros:")
     evaCurso += NoEscape(r" \newline ")
     tipEvalu = evalua[evalua.id == id].tipoEval.item()
@@ -483,9 +483,6 @@ def generar_programa(id):
             ,desGener])  
     doc.append(VerticalSpace("2mm", star=True))  
     doc.append(NewLine())
-    doc.append(atrTabla)
-    doc.append(VerticalSpace("4mm", star=True))  
-    doc.append(NewLine())
     with doc.create(Tabularx(table_spec=r"p{3cm}p{13cm}")) as table:
             table.add_row([textcolor
             (   
@@ -535,6 +532,13 @@ def generar_programa(id):
         text="5. Metodología"
         )
         ,metCurso])
+    doc.append(NewLine())
+    doc.append(atrTabla)
+    doc.append(VerticalSpace("4mm", star=True))  
+    doc.append(NewLine())
+    with doc.create(Tabularx(table_spec=r"p{3cm}p{13cm}")) as table:
+        table.add_row([""
+        ,apoCurso])
     doc.append(VerticalSpace("2mm", star=True))  
     doc.append(NewLine())
     with doc.create(Tabularx(table_spec=r"p{3cm}p{13cm}")) as table:
